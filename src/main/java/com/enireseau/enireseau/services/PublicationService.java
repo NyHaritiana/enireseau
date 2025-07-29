@@ -1,7 +1,10 @@
 package com.enireseau.enireseau.services;
 
+import com.enireseau.enireseau.entites.Image;
 import com.enireseau.enireseau.entites.Publication;
+import com.enireseau.enireseau.repository.EtudiantRepository;
 import com.enireseau.enireseau.repository.PublicationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,14 +14,30 @@ import java.util.Optional;
 public class PublicationService {
 
     private PublicationRepository publicationRepository;
+    @Autowired
+    private EtudiantRepository etudiantRepository;
 
-    public PublicationService(PublicationRepository publicationRepository) {
+    public PublicationService(PublicationRepository publicationRepository, EtudiantRepository etudiantRepository) {
         this.publicationRepository = publicationRepository;
+        this.etudiantRepository = etudiantRepository;
     }
 
     public void creer(Publication publication) {
-        this.publicationRepository.save(publication);
+        if (publication.getEtudiant() != null && publication.getEtudiant().getNum_matr() != 0) {
+            int numMatr = publication.getEtudiant().getNum_matr();
+            etudiantRepository.findById(numMatr).ifPresent(publication::setEtudiant);
+        }
+
+        if (publication.getImages() != null) {
+            for (Image image : publication.getImages()) {
+                image.setPublication(publication);
+            }
+        }
+
+        publicationRepository.save(publication);
     }
+
+
 
     public List<Publication> liste() {
         return this.publicationRepository.findAll();
