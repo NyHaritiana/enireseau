@@ -2,7 +2,6 @@ package com.enireseau.enireseau.services;
 
 import com.enireseau.enireseau.entites.Etudiant;
 import com.enireseau.enireseau.repository.EtudiantRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,17 +11,15 @@ import java.util.Optional;
 public class EtudiantService {
 
     private EtudiantRepository etudiantRepository;
-    private PasswordEncoder passwordEncoder;
 
-    public EtudiantService(EtudiantRepository etudiantRepository, PasswordEncoder passwordEncoder) {
+    public EtudiantService(EtudiantRepository etudiantRepository) {
         this.etudiantRepository = etudiantRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public void cree(Etudiant etudiant){
-        etudiant.setMot_de_passe(passwordEncoder.encode(etudiant.getMot_de_passe()));
         this.etudiantRepository.save(etudiant);
     }
+
     public List<Etudiant> liste(){
         return this.etudiantRepository.findAll();
     }
@@ -44,7 +41,7 @@ public class EtudiantService {
             etudiant1.setEmail_etud(etudiant.getEmail_etud());
             etudiant1.setNiveau_etud(etudiant.getNiveau_etud());
             etudiant1.setParcours_etud(etudiant.getParcours_etud());
-            etudiant1.setMot_de_passe(passwordEncoder.encode(etudiant.getMot_de_passe()));
+            etudiant1.setMot_de_passe(etudiant.getMot_de_passe());
             this.etudiantRepository.save(etudiant1);
         }
     }

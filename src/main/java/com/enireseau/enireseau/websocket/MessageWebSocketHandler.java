@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@SuppressWarnings("ALL")
 @Component
 public class MessageWebSocketHandler implements WebSocketHandler {
 
