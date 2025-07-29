@@ -14,17 +14,24 @@ public class Etudiant {
     private String prenom_etud;
     @Column(unique = true)
     private String email_etud;
-    private String classe_etud;
+    private String niveau_etud;
+    private String parcours_etud;
+    private String mot_de_passe;
+    @Column(nullable = false)
+    private Boolean en_ligne = false;
 
     public Etudiant() {
     }
 
-    public Etudiant(int num_matr, String nom_etud, String prenom_etud, String email_etud, String classe_etud) {
+    public Etudiant(int num_matr, String nom_etud, String prenom_etud, String email_etud, String niveau_etud, String parcours_etud, String mot_de_passe, Boolean en_ligne) {
         this.num_matr = num_matr;
         this.nom_etud = nom_etud;
         this.prenom_etud = prenom_etud;
         this.email_etud = email_etud;
-        this.classe_etud = classe_etud;
+        this.niveau_etud = niveau_etud;
+        this.parcours_etud = parcours_etud;
+        this.mot_de_passe = mot_de_passe;
+        this.en_ligne = en_ligne;
     }
 
     public int getNum_matr() {
@@ -59,11 +66,35 @@ public class Etudiant {
         this.email_etud = email_etud;
     }
 
-    public String getClasse_etud() {
-        return classe_etud;
+    public String getNiveau_etud() {
+        return niveau_etud;
     }
 
-    public void setClasse_etud(String classe_etud) {
-        this.classe_etud = classe_etud;
+    public void setNiveau_etud(String niveau_etud) {
+        this.niveau_etud = niveau_etud;
+    }
+
+    public String getParcours_etud() {
+        return parcours_etud;
+    }
+
+    public void setParcours_etud(String parcours_etud) {
+        this.parcours_etud = parcours_etud;
+    }
+
+    public String getMot_de_passe() {
+        return mot_de_passe;
+    }
+
+    public void setMot_de_passe(String mot_de_passe) {
+        this.mot_de_passe = mot_de_passe;
+    }
+
+    public Boolean getEn_ligne() {
+        return en_ligne;
+    }
+
+    public void setEn_ligne(Boolean en_ligne) {
+        this.en_ligne = en_ligne;
     }
 }
