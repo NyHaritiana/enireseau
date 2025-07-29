@@ -10,7 +10,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(path = "etudiant")
+@RequestMapping(path = "inscription")
 public class EtudiantController {
 
     private EtudiantService etudiantService;

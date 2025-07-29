@@ -39,7 +39,9 @@ public class EtudiantService {
             etudiant1.setNom_etud(etudiant.getNom_etud());
             etudiant1.setPrenom_etud(etudiant.getPrenom_etud());
             etudiant1.setEmail_etud(etudiant.getEmail_etud());
-            etudiant1.setClasse_etud(etudiant.getClasse_etud());
+            etudiant1.setNiveau_etud(etudiant.getNiveau_etud());
+            etudiant1.setParcours_etud(etudiant.getParcours_etud());
+            etudiant1.setMot_de_passe(etudiant.getMot_de_passe());
             this.etudiantRepository.save(etudiant1);
         }
     }
