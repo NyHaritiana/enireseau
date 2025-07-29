@@ -14,8 +14,6 @@ public class Publication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id_pub;
 
-    @Enumerated(EnumType.STRING)
-    private ReactPub react_pub;
     @ManyToOne
     @JoinColumn(name = "num_matr")
     private Etudiant etudiant;
@@ -24,17 +22,18 @@ public class Publication {
     @JsonManagedReference
     private List<Image> images;
 
-
+    @Column(name = "nb_likes")
+    private int nbLikes = 0;
 
     public Publication() {
     }
 
-    public Publication(int id_pub, ReactPub react_pub, Etudiant etudiant, String descri_pub, List<Image> images) {
+    public Publication(int id_pub, Etudiant etudiant, String descri_pub, List<Image> images, int nbLikes) {
         this.id_pub = id_pub;
-        this.react_pub = react_pub;
         this.etudiant = etudiant;
         this.descri_pub = descri_pub;
         this.images = images;
+        this.nbLikes = nbLikes;
     }
 
     public int getId_pub() {
@@ -43,14 +42,6 @@ public class Publication {
 
     public void setId_pub(int id_pub) {
         this.id_pub = id_pub;
-    }
-
-    public ReactPub getReact_pub() {
-        return react_pub;
-    }
-
-    public void setReact_pub(ReactPub react_pub) {
-        this.react_pub = react_pub;
     }
 
     public Etudiant getEtudiant() {
@@ -75,5 +66,13 @@ public class Publication {
 
     public void setImages(List<Image> images) {
         this.images = images;
+    }
+
+    public int getNbLikes() {
+        return nbLikes;
+    }
+
+    public void setNbLikes(int nbLikes) {
+        this.nbLikes = nbLikes;
     }
 }
