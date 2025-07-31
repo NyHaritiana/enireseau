@@ -28,8 +28,8 @@ public class PublicationService {
     }
 
     public void creer(Publication publication) {
-        if (publication.getEtudiant() != null && publication.getEtudiant().getNum_matr() != 0) {
-            int numMatr = publication.getEtudiant().getNum_matr();
+        if (publication.getEtudiant() != null && publication.getEtudiant().getNum_matr() != null) {
+            String numMatr = publication.getEtudiant().getNum_matr();
             etudiantRepository.findById(numMatr).ifPresent(publication::setEtudiant);
         }
 
@@ -42,7 +42,7 @@ public class PublicationService {
         publicationRepository.save(publication);
     }
 
-    public void creerAvecImages(String descri_pub, int num_matr, List<MultipartFile> files) throws IOException {
+    public void creerAvecImages(String descri_pub, String num_matr, List<MultipartFile> files) throws IOException {
         Optional<Etudiant> etudiantOpt = etudiantRepository.findById(num_matr);
         if (etudiantOpt.isEmpty()) return;
 
@@ -94,7 +94,7 @@ public class PublicationService {
         }
     }
 
-    public void toggleReaction(int id_pub, int num_matr) {
+    public void toggleReaction(int id_pub, String num_matr) {
         Optional<Publication> optPub = publicationRepository.findById(id_pub);
         Optional<Etudiant> optEtud = etudiantRepository.findById(num_matr);
 

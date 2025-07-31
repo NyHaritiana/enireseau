@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 @Table(name = "\"ETUDIANT\"")
 public class Etudiant {
     @Id
-    private int num_matr;
+    private String num_matr;
     private String nom_etud;
     private String prenom_etud;
     @Column(unique = true)
@@ -23,7 +23,7 @@ public class Etudiant {
     public Etudiant() {
     }
 
-    public Etudiant(int num_matr, String nom_etud, String prenom_etud, String email_etud, String niveau_etud, String parcours_etud, String mot_de_passe, Boolean en_ligne) {
+    public Etudiant(String num_matr, String nom_etud, String prenom_etud, String email_etud, String niveau_etud, String parcours_etud, String mot_de_passe, Boolean en_ligne) {
         this.num_matr = num_matr;
         this.nom_etud = nom_etud;
         this.prenom_etud = prenom_etud;
@@ -34,11 +34,11 @@ public class Etudiant {
         this.en_ligne = en_ligne;
     }
 
-    public int getNum_matr() {
+    public String getNum_matr() {
         return num_matr;
     }
 
-    public void setNum_matr(int num_matr) {
+    public void setNum_matr(String num_matr) {
         this.num_matr = num_matr;
     }
 

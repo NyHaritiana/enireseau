@@ -30,7 +30,7 @@ public class PublicationController {
     @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void creerAvecFichiers(
             @RequestParam("descri_pub") String descri_pub,
-            @RequestParam("num_matr") int num_matr,
+            @RequestParam("num_matr") String num_matr,
             @RequestParam("files") List<MultipartFile> files
     ) throws IOException {
         publicationService.creerAvecImages(descri_pub, num_matr, files);
@@ -52,8 +52,13 @@ public class PublicationController {
     }
 
     @PutMapping("/{id_pub}/like/{num_matr}")
-    public void toggleReaction(@PathVariable int id_pub, @PathVariable int num_matr) {
+    public void toggleReaction(@PathVariable int id_pub, @PathVariable String num_matr) {
         publicationService.toggleReaction(id_pub, num_matr);
     }
 
+    @GetMapping("/{id_pub}/likes")
+    public int getNombreLikes(@PathVariable int id_pub) {
+        Publication pub = publicationService.list(id_pub);
+        return pub != null ? pub.getNbLikes() : 0;
+    }
 }

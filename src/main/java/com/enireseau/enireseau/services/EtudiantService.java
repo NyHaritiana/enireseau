@@ -24,17 +24,17 @@ public class EtudiantService {
         return this.etudiantRepository.findAll();
     }
 
-    public Etudiant list(int num_matr){
-        Optional<Etudiant> optionalEtudiant = this.etudiantRepository.findById(num_matr);
+    public Etudiant list(String num_matr){
+        Optional<Etudiant> optionalEtudiant = this.etudiantRepository.findById((num_matr));
         return optionalEtudiant.orElse(null);
     }
 
-    public void supprime(int num_matr) {
+    public void supprime(String num_matr) {
         this.etudiantRepository.deleteById(num_matr);
     }
 
-    public void modifie(int num_matr, Etudiant etudiant) {
-        Etudiant etudiant1 = this.list(num_matr);
+    public void modifie(String num_matr, Etudiant etudiant) {
+        Etudiant etudiant1 = this.list(String.valueOf(Integer.parseInt(num_matr)));
         if (etudiant1.getNum_matr() == etudiant.getNum_matr()){
             etudiant1.setNom_etud(etudiant.getNom_etud());
             etudiant1.setPrenom_etud(etudiant.getPrenom_etud());

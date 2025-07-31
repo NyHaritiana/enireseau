@@ -8,7 +8,7 @@ public class Reaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int id_react;
 
     @ManyToOne
     @JoinColumn(name = "id_pub")
@@ -26,11 +26,11 @@ public class Reaction {
     }
 
     public int getId() {
-        return id;
+        return id_react;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int id_react) {
+        this.id_react = id_react;
     }
 
     public Publication getPublication() {

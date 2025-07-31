@@ -31,12 +31,12 @@ public class EtudiantController {
     }
 
     @DeleteMapping(path = "{num_matr}")
-    public void supprime(@PathVariable int num_matr){
+    public void supprime(@PathVariable String num_matr){
         this.etudiantService.supprime(num_matr);
     }
 
     @PutMapping(path = "{num_matr}", consumes = APPLICATION_JSON_VALUE)
-    public void modifie(@PathVariable int num_matr, @RequestBody Etudiant etudiant){
+    public void modifie(@PathVariable String num_matr, @RequestBody Etudiant etudiant){
         this.etudiantService.modifie(num_matr, etudiant);
     }
 }

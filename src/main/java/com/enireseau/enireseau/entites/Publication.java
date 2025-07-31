@@ -15,13 +15,12 @@ public class Publication {
     private int id_pub;
 
     @ManyToOne
-    @JoinColumn(name = "num_matr")
+    @JoinColumn(name = "num_matr", referencedColumnName = "num_matr")
     private Etudiant etudiant;
     private String descri_pub;
     @OneToMany(mappedBy = "publication", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Image> images;
-
     @Column(name = "nb_likes")
     private int nbLikes = 0;
 
