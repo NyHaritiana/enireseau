@@ -20,65 +20,61 @@ public class EtudiantService {
     }
 
     public void cree(Etudiant etudiant) {
-        try {
-            etudiantRepository.save(etudiant);
-            logger.info("Étudiant créé avec succès: {}", etudiant.getNum_matr());
-        } catch (Exception e) {
-            logger.error("Erreur lors de la création de l'étudiant: {}", e.getMessage(), e);
+        if (etudiantRepository.existsByEmailEtud(etudiant.getEmail_etud())) {
+            throw new IllegalArgumentException("L'email est déjà utilisé.");
         }
+        etudiantRepository.save(etudiant);
+        logger.info("Étudiant créé avec succès: {}", etudiant.getNum_matr());
     }
 
     public List<Etudiant> liste() {
-        try {
-            return etudiantRepository.findAll();
-        } catch (Exception e) {
-            logger.error("Erreur lors de la récupération de la liste des étudiants: {}", e.getMessage(), e);
-            return List.of(); // Retourne une liste vide en cas d'erreur
-        }
+        return etudiantRepository.findAll();
     }
 
     public Etudiant list(String num_matr) {
-        try {
-            Optional<Etudiant> optionalEtudiant = etudiantRepository.findById(num_matr);
-            if (optionalEtudiant.isPresent()) {
-                return optionalEtudiant.get();
-            } else {
-                logger.warn("Aucun étudiant trouvé avec le matricule: {}", num_matr);
-                return null;
-            }
-        } catch (Exception e) {
-            logger.error("Erreur lors de la recherche de l'étudiant {}: {}", num_matr, e.getMessage(), e);
-            return null;
-        }
+        return etudiantRepository.findById(num_matr).orElse(null);
     }
 
     public void supprime(String num_matr) {
-        try {
+        if (etudiantRepository.existsById(num_matr)) {
             etudiantRepository.deleteById(num_matr);
             logger.info("Étudiant supprimé avec succès: {}", num_matr);
-        } catch (Exception e) {
-            logger.error("Erreur lors de la suppression de l'étudiant {}: {}", num_matr, e.getMessage(), e);
+        } else {
+            logger.warn("Suppression échouée : étudiant introuvable avec matricule {}", num_matr);
+            throw new IllegalArgumentException("Étudiant introuvable");
         }
     }
 
-    public void modifie(String num_matr, Etudiant etudiant) {
-        try {
-            Optional<Etudiant> optionalEtudiant = etudiantRepository.findById(num_matr);
-            if (optionalEtudiant.isPresent()) {
-                Etudiant etudiant1 = optionalEtudiant.get();
-                etudiant1.setNom_etud(etudiant.getNom_etud());
-                etudiant1.setPrenom_etud(etudiant.getPrenom_etud());
-                etudiant1.setEmail_etud(etudiant.getEmail_etud());
-                etudiant1.setParcours_etud(etudiant.getParcours_etud());
-                etudiant1.setNiveau_etud(etudiant.getNiveau_etud());
-                etudiant1.setMot_de_passe(etudiant.getMot_de_passe());
-                etudiantRepository.save(etudiant1);
-                logger.info("Étudiant mis à jour: {}", num_matr);
-            } else {
-                logger.warn("Impossible de modifier: étudiant non trouvé avec le matricule {}", num_matr);
-            }
-        } catch (Exception e) {
-            logger.error("Erreur lors de la modification de l'étudiant {}: {}", num_matr, e.getMessage(), e);
+    public boolean modifie(String num_matr, Etudiant etudiant) {
+        Optional<Etudiant> optionalEtudiant = etudiantRepository.findById(num_matr);
+        if (optionalEtudiant.isPresent()) {
+            Etudiant etudiantExistant = optionalEtudiant.get();
+            etudiantExistant.setNom_etud(etudiant.getNom_etud());
+            etudiantExistant.setPrenom_etud(etudiant.getPrenom_etud());
+            etudiantExistant.setEmail_etud(etudiant.getEmail_etud());
+            etudiantExistant.setParcours_etud(etudiant.getParcours_etud());
+            etudiantExistant.setNiveau_etud(etudiant.getNiveau_etud());
+            etudiantExistant.setMot_de_passe(etudiant.getMot_de_passe());
+            etudiantExistant.setEn_ligne(etudiant.getEn_ligne());
+            etudiantRepository.save(etudiantExistant);
+            logger.info("Étudiant mis à jour: {}", num_matr);
+            return true;
+        } else {
+            logger.warn("Échec modification : étudiant introuvable avec matricule {}", num_matr);
+            return false;
         }
+    }
+
+    public boolean mettreEnLigne(String num_matr, boolean enLigne) {
+        Optional<Etudiant> optionalEtudiant = etudiantRepository.findById(num_matr);
+        if (optionalEtudiant.isPresent()) {
+            Etudiant e = optionalEtudiant.get();
+            e.setEn_ligne(enLigne);
+            etudiantRepository.save(e);
+            logger.info("Étudiant {} mis à jour (en_ligne = {})", num_matr, enLigne);
+            return true;
+        }
+        logger.warn("Étudiant introuvable pour changement d'état en_ligne: {}", num_matr);
+        return false;
     }
 }
