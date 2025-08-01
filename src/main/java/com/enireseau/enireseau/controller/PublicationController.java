@@ -7,7 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -20,20 +19,14 @@ public class PublicationController {
         this.publicationService = publicationService;
     }
 
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void creer(@RequestBody Publication publication) {
-        this.publicationService.creer(publication);
-    }
-
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void creerAvecFichiers(
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void creerPublication(
             @RequestParam("descri_pub") String descri_pub,
             @RequestParam("num_matr") String num_matr,
-            @RequestParam("files") List<MultipartFile> files
-    ) throws IOException {
-        publicationService.creerAvecImages(descri_pub, num_matr, files);
+            @RequestParam(value = "files", required = false) List<MultipartFile> files
+    ) {
+        publicationService.creerPublication(descri_pub, num_matr, files);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

@@ -5,6 +5,7 @@ import com.enireseau.enireseau.entites.Image;
 import com.enireseau.enireseau.entites.Publication;
 import com.enireseau.enireseau.entites.Reaction;
 import com.enireseau.enireseau.repository.EtudiantRepository;
+import com.enireseau.enireseau.repository.ImageRepository;
 import com.enireseau.enireseau.repository.PublicationRepository;
 import com.enireseau.enireseau.repository.ReactionRepository;
 import org.slf4j.Logger;
@@ -25,32 +26,16 @@ public class PublicationService {
     private final EtudiantRepository etudiantRepository;
     private final ReactionRepository reactionRepository;
 
-    public PublicationService(PublicationRepository publicationRepository, EtudiantRepository etudiantRepository, ReactionRepository reactionRepository) {
+    private final ImageRepository imageRepository;
+
+    public PublicationService(PublicationRepository publicationRepository, EtudiantRepository etudiantRepository, ReactionRepository reactionRepository, ImageRepository imageRepository) {
         this.publicationRepository = publicationRepository;
         this.etudiantRepository = etudiantRepository;
         this.reactionRepository = reactionRepository;
+        this.imageRepository = imageRepository;
     }
 
-    public void creer(Publication publication) {
-        try {
-            if (publication.getEtudiant() != null && publication.getEtudiant().getNum_matr() != null) {
-                String numMatr = publication.getEtudiant().getNum_matr();
-                etudiantRepository.findById(numMatr).ifPresent(publication::setEtudiant);
-            }
-
-            if (publication.getImages() != null) {
-                for (Image image : publication.getImages()) {
-                    image.setPublication(publication);
-                }
-            }
-
-            publicationRepository.save(publication);
-        } catch (Exception e) {
-            logger.error("Erreur lors de la création de la publication", e);
-        }
-    }
-
-    public void creerAvecImages(String descri_pub, String num_matr, List<MultipartFile> files) {
+    public void creerPublication(String descri_pub, String num_matr, List<MultipartFile> files) {
         try {
             Optional<Etudiant> etudiantOpt = etudiantRepository.findById(num_matr);
             if (etudiantOpt.isEmpty()) {
@@ -59,34 +44,34 @@ public class PublicationService {
             }
 
             Etudiant etudiant = etudiantOpt.get();
-
             Publication publication = new Publication();
             publication.setDescri_pub(descri_pub);
             publication.setEtudiant(etudiant);
 
-            List<Image> images = new ArrayList<>();
-            Path uploadDir = Paths.get("uploads");
-            Files.createDirectories(uploadDir);
+            publicationRepository.save(publication);
 
-            for (MultipartFile file : files) {
-                if (file.isEmpty()) continue;
+            if (files != null && !files.isEmpty()) {
+                Path uploadDir = Paths.get("uploads");
+                Files.createDirectories(uploadDir);
 
-                String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-                Path filePath = uploadDir.resolve(filename);
-                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                for (MultipartFile file : files) {
+                    if (file.isEmpty()) continue;
 
-                Image image = new Image();
-                image.setChemin(filePath.toString());
-                image.setPublication(publication);
-                images.add(image);
+                    String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+                    Path filePath = uploadDir.resolve(filename);
+                    Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                    Image image = new Image();
+                    image.setChemin("uploads/" + filename);
+                    image.setPublication(publication);
+                    imageRepository.save(image);
+                }
             }
 
-            publication.setImages(images);
-            publicationRepository.save(publication);
         } catch (IOException e) {
             logger.error("Erreur d'I/O lors de l'enregistrement des images", e);
         } catch (Exception e) {
-            logger.error("Erreur inattendue lors de la création de publication avec images", e);
+            logger.error("Erreur lors de la création de la publication", e);
         }
     }
 
@@ -121,7 +106,12 @@ public class PublicationService {
             Publication publication1 = this.list(id_pub);
             if (publication1 != null) {
                 publication1.setDescri_pub(publication.getDescri_pub());
-                publication1.setEtudiant(publication.getEtudiant());
+
+                if (publication.getEtudiant() != null && publication.getEtudiant().getNum_matr() != null) {
+                    Optional<Etudiant> etuOpt = etudiantRepository.findById(publication.getEtudiant().getNum_matr());
+                    etuOpt.ifPresent(publication1::setEtudiant);
+                }
+
                 this.publicationRepository.save(publication1);
             } else {
                 logger.warn("Publication à modifier introuvable pour id={}", id_pub);
@@ -162,4 +152,5 @@ public class PublicationService {
             logger.error("Erreur lors de l'ajout/suppression de la réaction", e);
         }
     }
+
 }

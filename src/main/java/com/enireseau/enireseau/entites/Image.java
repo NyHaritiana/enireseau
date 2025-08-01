@@ -14,8 +14,6 @@ public class Image {
     @JoinColumn(name = "id_pub")
     @JsonBackReference
     private Publication publication;
-
-
     private String chemin;
 
     public Image() {
